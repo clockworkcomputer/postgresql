@@ -1,0 +1,82 @@
+REPOSITORIO GITHUB
+https://github.com/clockworkcomputer/postgresql.git
+
+1. DESCARGAR REPOSITORIO
+git clone https://github.com/clockworkcomputer/postgresql.git
+
+2. INSTALACIÓN MANUAL
+mkdir postgresql
+cd postgresql
+nano docker-compose.yml
+
+LEVANTAR CONTENEDOR
+docker-compose up -d
+
+CONECTAR A PGADMIN4 DESDE NAVEGADOR
+DIRECCIÓNIP:8888
+
+MODIFICAR DOCKER-COMPOSE PUERTO 80
+80:80
+
+**************************************************************
+
+RESOLUCIÓN NOMBRE DE DOMINIO
+CASO 1 SIN SERVIDOR DNS - ARCHIVO HOSTS
+sudo nano /etc/hosts 
+192.168.30.3 ftps.docker.local
+
+CASO 2. BIND9
+AÑADIR ZONA NUEVA docker.local
+AÑADIR HOST postgresql.docker.local IN A 192.168.30.3 
+sudo systemctl restart bind9
+
+CASO 3. SAMBA INTERNAL DNS
+sudo samba-tool user setpassword administrator
+samba-tool dns zonecreate dc docker.local -U administrator
+samba-tool dns add dc docker.local postgresql A 192.168.30.3 -U administrator
+
+SOLUCIÓN RESOLV.CONF > 18.04
+ls -l /etc/resolv.conf
+sudo rm -f /etc/resolv.conf
+sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+ls -l /etc/resolv.conf
+
+**************************************************************
+
+INSTALAR PGADMIN EN UBUNTU DESKTOP
+1. INSTALAR SSH 
+sudo apt-get install ssh
+
+2. OBTENER DIRECCIÓN IP 
+ip address
+
+3. CONECTAR POR SSH A UBUNTU DESKTOP
+ssh USUARIO@DIRECCIÓNIP
+
+4. INSTALACIÓN PGADMIN - https://www.pgadmin.org/download/pgadmin-4-apt/
+# Install the public key for the repository (if not done previously):
+curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+
+# Create the repository configuration file:
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+
+# Install for desktop mode only:
+sudo apt install pgadmin4-desktop
+
+**************************************************************
+
+ADMINISTRACÓN DE DOCKER
+LISTAR CONTENEDORES EN EJECUCIÓN
+sudo docker ps
+
+LISTAR CONTENEDORES ACTIVOS E INACTIVOS
+sudo docker ps -a
+
+DETENER TODOS LOS CONTENEDORES
+docker stop $(docker ps -a -q)
+
+ELIMINAR TODOS LOS CONTENEDORES
+docker rm $(docker ps -a -q)
+
+ELIMINAR TODAS LAS IMÁGENES
+docker rmi $(docker images -q)
