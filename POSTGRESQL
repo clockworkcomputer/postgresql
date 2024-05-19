@@ -23,17 +23,17 @@ MODIFICAR DOCKER-COMPOSE PUERTO 80
 RESOLUCIÓN NOMBRE DE DOMINIO
 CASO 1 SIN SERVIDOR DNS - ARCHIVO HOSTS
 sudo nano /etc/hosts 
-192.168.30.3 ftps.docker.local
+192.168.30.3 pgadmin.docker.local
 
 CASO 2. BIND9
 AÑADIR ZONA NUEVA docker.local
-AÑADIR HOST postgresql.docker.local IN A 192.168.30.3 
+AÑADIR HOST pgadmin.docker.local IN A 192.168.30.3 
 sudo systemctl restart bind9
 
 CASO 3. SAMBA INTERNAL DNS
 sudo samba-tool user setpassword administrator
 samba-tool dns zonecreate dc docker.local -U administrator
-samba-tool dns add dc docker.local postgresql A 192.168.30.3 -U administrator
+samba-tool dns add dc docker.local pgadmin A 192.168.30.3 -U administrator
 
 SOLUCIÓN RESOLV.CONF > 18.04
 ls -l /etc/resolv.conf
